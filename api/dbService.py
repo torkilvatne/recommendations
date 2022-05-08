@@ -7,4 +7,5 @@ def get_all_products():
     return db[:10]
 
 def get_product_by_id(id: str):
-    return next((x for x in db if x.id == id), None)
+    product = next(filter(lambda x: x.get('id') == id,  db))
+    return product

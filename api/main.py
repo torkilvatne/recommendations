@@ -4,8 +4,7 @@ from fastapi import FastAPI, status, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from schemas import Product
 import json
-from dbService import get_all_products
-from dbService import get_product_by_id
+from dbService import get_all_products, get_product_by_id
 
 f = open('../db/MOCK_DATA.json')
 db = json.load(f)
