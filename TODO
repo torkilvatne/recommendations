@@ -1,0 +1,4 @@
+Recommendation attributes:
+    ☐ Price
+    ☐ Text string attributes (is category the same ? 1/true : 0/false)
+    ☐ Product name (Name similarity - text intepretation)
