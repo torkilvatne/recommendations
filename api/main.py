@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from schemas import Product
 import json
 from dbService import get_all_products, get_product_by_id
+from utils import find_product_to_recommend
 
 f = open('../db/MOCK_DATA.json')
 db = json.load(f)
@@ -34,8 +35,7 @@ def read_root():
 def get_all_products_from_db():
     return get_all_products()
 
-@app.get("/similar_products/{product_id}", response_model=List[Product], status_code=status.HTTP_200_OK)
+@app.get("/similar_products/{product_id}", response_model=Product, status_code=status.HTTP_200_OK)
 def get_similar_products(product_id: str):
     product = get_product_by_id(product_id)
-    print(product)
-    return [product]
+    return find_product_to_recommend(product)
