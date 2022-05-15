@@ -7,6 +7,13 @@
     "production_location": "Sweden"
   },
   {
+    "id": "89.23.77.21813",
+    "product_name": "Helt likt produkt",
+    "category": "Dryopteridaceae",
+    "price": 209,
+    "production_location": "Sweden"
+  },
+  {
     "id": "202.30.240.6123",
     "product_name": "Extract - Rum",
     "category": "Apiaceae",

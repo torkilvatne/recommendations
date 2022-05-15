@@ -1,34 +1,26 @@
+import enum
 from dbService import get_all_products
 from schemas import Product
 import math
 
 COMPARISON_VALUES_NUMERICAL = ['price']
+COMPARISON_VALUES_CATEGORICAL = ['category', 'production_location']
+N = 5
 
 def find_product_to_recommend(base_product: Product):
     # Get all products
     db = get_all_products()
 
-    # Loop through products and if similarity-score is higher than set product -> replace
-    current_score = 0
-    current_product = None
+    # List of products with similarity score
+    similarity_scores = []
     for product in db:
-        print(product)
-        if (product['id'] == base_product.id):
+        if (product['id'] == base_product['id']):
             continue
-        similarity_score = cosine_similarity(base_product, product)
-        print(similarity_score + " for " + product.id)
-        if (similarity_score > current_score):
-            current_score = similarity_score
-            current_product = product
-
-    # Logging
-    print("Highest score:")
-    print(current_score)
-    print("Most similar product: ")
-    print(current_product)
+        similarity_scores = insort(similarity_scores, product, cosine_similarity(base_product, product))
 
     # Return most similar product
-    return current_product
+    similarity_scores.sort(key=lambda x: x['similarity_score'], reverse=True)
+    return similarity_scores
 
 # https://towardsdatascience.com/cosine-similarity-explained-using-python-machine-learning-pyshark-5c5d6b9c18fa
 # https://towardsdatascience.com/find-similar-products-to-recommend-to-users-8c2f4308c2e4
@@ -39,7 +31,9 @@ def cosine_similarity(i: Product, j: Product):
         # (i · j) = (i1 × j1) + (i2 × j2) + ... + (in × jn)
     nominator = 0
     for comparison_value in COMPARISON_VALUES_NUMERICAL:
-        nominator += get_product_value_of(i, j, comparison_value)
+        nominator += get_product_value_of_numerical(i, j, comparison_value)
+    for comparison_value in COMPARISON_VALUES_CATEGORICAL:
+        nominator += get_product_value_of_categorical(i, j, comparison_value)
     
     # Denominator
         # ||i|| × ||j|| = sqrt(i1^2 + i2^2 + ... + in^2) × sqrt(j1^2 + j2^2 + ... + jn^2)
@@ -51,11 +45,29 @@ def cosine_similarity(i: Product, j: Product):
 
     return similarity
 
-def get_product_value_of(i, j, key):
+def get_product_value_of_numerical(i, j, key):
     return i[key] * j[key]
 
-def get_length_of_vector(product):
+def get_product_value_of_categorical(i, j, key):
+    return 1 if i[key] == j[key] else 0
+
+def get_length_of_vector(product):  
     sum_of_values = 0
     for key in COMPARISON_VALUES_NUMERICAL:
         sum_of_values += product[key]**2
+    for key in COMPARISON_VALUES_CATEGORICAL:
+        sum_of_values += 1**2
     return math.sqrt(sum_of_values)
+
+def insort(li, p, sc):
+    p['similarity_score'] = sc
+    if len(li):
+        li.append(p)
+    else:
+        i = 0
+        for index, value in enumerate(li):
+            if value['similarity_score'] < sc:
+                i = index
+                break
+        li.insert(i, p)
+    return li[:N]

@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from pydantic import BaseModel
 
 class ProductBase(BaseModel):
@@ -10,6 +8,12 @@ class ProductBase(BaseModel):
     production_location:str
 
 class Product(ProductBase):
+
+    class Config:
+        orm_mode = True
+
+class SimilarityProduct(ProductBase):
+    similarity_score:str
 
     class Config:
         orm_mode = True

@@ -2,7 +2,7 @@ from math import prod
 from typing import Optional, List
 from fastapi import FastAPI, status, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from schemas import Product
+from schemas import Product, SimilarityProduct
 import json
 from dbService import get_all_products, get_product_by_id
 from utils import find_product_to_recommend
@@ -35,7 +35,9 @@ def read_root():
 def get_all_products_from_db():
     return get_all_products()
 
-@app.get("/similar_products/{product_id}", response_model=Product, status_code=status.HTTP_200_OK)
+@app.get("/similar_products/{product_id}", response_model=List[SimilarityProduct], status_code=status.HTTP_200_OK)
 def get_similar_products(product_id: str):
     product = get_product_by_id(product_id)
-    return find_product_to_recommend(product)
+    if (product):
+        return find_product_to_recommend(product)
+    return None
