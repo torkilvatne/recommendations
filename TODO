@@ -1,4 +1,4 @@
 Recommendation attributes:
-    ☐ Price
-    ☐ Text string attributes (is category the same ? 1/true : 0/false)
+    ✔ Price @done(22-05-15 20:01)
+    ✔ Text string attributes (is category the same ? 1/true : 0/false) @done(22-05-15 20:01)
     ☐ Product name (Name similarity - text intepretation)
